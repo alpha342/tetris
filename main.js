@@ -90,7 +90,7 @@ function spawnBlock() {
   block.forEach((arr, y) => {
     arr.forEach((num, x) => {
       if (num == 1) {
-        ctx.fillRect(x + 3, y, 1, 1);
+        ctx.fillRect(x + 3, y - 2, 1, 1);
       }
     });
   });
@@ -102,7 +102,7 @@ function drawBlock() {
   block.forEach((arr, y) => {
     arr.forEach((num, x) => {
       if (num == 1) {
-        ctx.fillRect(x + 3, y + g, 1, 1);
+        ctx.fillRect(x + 3, y + g - 2, 1, 1);
       }
     });
   });
