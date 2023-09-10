@@ -1,0 +1,35 @@
+#container {
+  display: flex;
+  justify-content: center;
+}
+#board {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+#hold,
+#next {
+  border-bottom: 1px solid black;
+}
+
+#left {
+  border: 1px solid black;
+}
+
+#right {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#button {
+  height: 50px;
+  background-color: #0af;
+  border: 0;
+  border-top: 1px solid black;
+}
+
+#button:active {
+  background-color: #08f;
+}
