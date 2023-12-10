@@ -3,34 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="./contants.js"></script>
-    <script src="./block.js"></script>
-    <script src="./main.js"></script>
     <link rel="stylesheet" href="./style.css" />
-    <title>TETRIS</title>
+    <title>Tetris</title>
   </head>
   <body>
-    <div id="container">
-      <div id="left">
-        <canvas id="hold"></canvas>
-        <div>
-          SCORE
-          <div id="score">000</div>
-        </div>
-        <div>
-          LEVEL
-          <div id="level">000</div>
-        </div>
-        <div>
-          LINES
-          <div id="lines">000</div>
-        </div>
-      </div>
-      <canvas id="board"></canvas>
-      <div id="right">
-        <canvas id="next"></canvas>
-        <button id="button" onclick="start()">play</button>
-      </div>
-    </div>
+    <div div class="game-board"></div>
+    <script src="./main.js" type="module"></script>
   </body>
 </html>

@@ -1,139 +1,262 @@
-window.onload = function () {
-  init();
-  draw();
-};
+import { createDiv, updateBlock, cellAt, setCellStyle } from './utils.js';
+const COLS = 10;
+const ROWS = 22;
 
-function init() {
-  grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-  newGrid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-  canvas = document.getElementById('board');
-  ctx = canvas.getContext('2d');
-  gravity = 0;
-  canMove = true;
-  pause = false;
-  yPos = 0;
-  stoppedTime = 0;
+const board = document.querySelector('.game-board');
+let boardState = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 
-  ctx.canvas.width = COLS * BLOCK_SIZE;
-  ctx.canvas.height = ROWS * BLOCK_SIZE;
-  ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+let row = -1;
+let col = 3;
+
+let curBlock;
+let bag = [];
+let stop = false;
+
+const blocks = [
+  {
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0],
+    ],
+    color: '#ef4e69',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [0, 0, 1],
+      [1, 1, 1],
+      [0, 0, 0],
+    ],
+    color: '#f78828',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [0, 1, 1, 0],
+      [0, 1, 1, 0],
+    ],
+    color: '#fad03d',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0],
+    ],
+    color: '#52b84f',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    color: '#58d0f5',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [1, 0, 0],
+      [1, 1, 1],
+      [0, 0, 0],
+    ],
+    color: '#3398f4',
+    rotateState: 0,
+  },
+  {
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+      [0, 0, 0],
+    ],
+    color: '#d556eb',
+    rotateState: 0,
+  },
+];
+
+function createBoard() {
+  for (let r = 0; r < ROWS; r++) {
+    const rowDiv = createDiv('row');
+    for (let c = 0; c < COLS; c++) {
+      const cellDiv = createDiv('cell');
+      rowDiv.appendChild(cellDiv);
+    }
+    board.appendChild(rowDiv);
+  }
 }
 
-function draw() {
-  resetGrid();
-  spawnBlock();
-  setInterval(() => {
-    resetGrid();
-    fallingBlock();
-    drawBlock();
-  }, 250);
-  setInterval(() => {
-    location.reload(true);
-  }, 60000);
+function drawDeadZoon() {
+  for (let y = 0; y < 2; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const cell = board.querySelectorAll('.row')[y].querySelectorAll('.cell')[x];
+      if (cell.style.borderStyle != 'outset') cell.style.backgroundColor = 'darkgray';
+    }
+  }
 }
 
-function resetGrid() {
-  newGrid.forEach((arr, y) => {
-    arr.forEach((num, x) => {
-      grid[y][x] = num;
-    });
-  });
-  ctx.fillStyle = 'white';
-  grid.forEach((arr, y) => {
-    arr.forEach((num, x) => {
-      if (num == 0) {
-        ctx.fillRect(x, y, 1, 1);
-      }
-    });
-  });
+function createBlock() {
+  let ran = Math.floor(Math.random() * blocks.length); //0~6
+  while (bag.includes(ran)) ran = Math.floor(Math.random() * blocks.length);
+
+  bag.push(ran);
+  if (bag.length == blocks.length) bag = [];
+
+  return blocks[ran];
 }
 
 function spawnBlock() {
-  let ran = Math.floor(Math.random() * 7 + 1);
-  if (ran == 1) {
-    block = ZBLOCK;
-    color = 'red';
-  }
-  if (ran == 2) {
-    block = LBLOCK;
-    color = 'orange';
-  }
-  if (ran == 3) {
-    block = OBLOCK;
-    color = 'gold';
-  }
-  if (ran == 4) {
-    block = SBLOCK;
-    color = 'green';
-  }
-  if (ran == 5) {
-    block = IBLOCK;
-    color = 'aqua';
-  }
-  if (ran == 6) {
-    block = JBLOCK;
-    color = 'blue';
-  }
-  if (ran == 7) {
-    block = TBLOCK;
-    color = 'darkviolet';
-  }
-  block.forEach((arr, y) => {
-    arr.forEach((num, x) => {
-      if (num > 0 && y - 2 >= 0) {
-        grid[y - 2][x + 3] = num;
-      }
-    });
-  });
-}
-
-function fallingBlock() {
-  if (!pause && canMove && yPos <= 18) gravity += 1;
-  let g = Math.floor(gravity);
-  block.forEach((arr, y) => {
-    arr.forEach((num, x) => {
-      if (num > 0 && y + g - 2 >= 0) {
-        grid[y + g - 2][x + 3] = num;
-        if (yPos <= y + g - 2) yPos = y + g - 2;
-        if (yPos != 19 && grid[yPos + 1][x + 3] != 0) canMove = false;
-      }
-    });
-  });
-  if (stoppedTime == 4) {
-    canMove = true;
-    yPos = 0;
-    stoppedTime = 0;
-    gravity = 0;
-    grid.forEach((arr, y) => {
-      arr.forEach((num, x) => {
-        newGrid[y][x] = num;
-      });
-    });
-    spawnBlock();
-  }
-  if (yPos == 19) canMove = false;
-  if (!canMove) stoppedTime += 1;
+  col = 3;
+  row = -1;
+  curBlock = createBlock();
+  for (let i = 0; i < curBlock.rotateState; i++) rotateBlock();
 }
 
 function drawBlock() {
-  grid.forEach((arr, y) => {
-    arr.forEach((num, x) => {
-      if (num > 0) {
-        if (num == 1) color = 'red';
-        if (num == 2) color = 'orange';
-        if (num == 3) color = 'gold';
-        if (num == 4) color = 'green';
-        if (num == 5) color = 'aqua';
-        if (num == 6) color = 'blue';
-        if (num == 7) color = 'darkviolet';
+  const { shape, color } = curBlock;
 
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1);
-      }
-    });
+  updateBlock(shape, (x, y) => {
+    if (shape[y][x] !== 0 && y + row >= 0) {
+      const cell = cellAt(x + col, y + row);
+      setCellStyle(cell, color, 'outset');
+    }
   });
 }
 
-function start() {
-  pause = !pause;
+function eraseBlock() {
+  const { shape } = curBlock;
+
+  updateBlock(shape, (x, y) => {
+    if (shape[y][x] !== 0 && y + row >= 0) {
+      boardState[y + row][x + col] = 0;
+      const cell = cellAt(x + col, y + row);
+      setCellStyle(cell, 'white', 'inset');
+    }
+  });
+
+  drawDeadZoon();
 }
+
+function moveCheck(direction) {
+  const { shape } = curBlock;
+  let canMove = true;
+  let yOffset, xOffset;
+
+  if (direction == 'down') {
+    yOffset = 1;
+    xOffset = 0;
+  }
+  if (direction == 'left') {
+    yOffset = 0;
+    xOffset = -1;
+  }
+  if (direction == 'right') {
+    yOffset = 0;
+    xOffset = 1;
+  }
+
+  for (let y = 0; y < shape.length; y++) {
+    for (let x = 0; x < shape[y].length; x++) {
+      if (shape[y][x] == 1) {
+        let r = row + y + yOffset;
+        let c = col + x + xOffset;
+
+        if (row >= 0 && r >= ROWS && direction == 'down') canMove = false;
+        else if (row >= -1 && boardState[r][c] == 1) canMove = false;
+        else if (c < 0 || c > COLS - 1) canMove = false;
+
+        if (direction == 'down' && canMove == false) {
+          if (row == 0) location.reload();
+          lockBlock();
+          spawnBlock();
+          canMove = true;
+        }
+      }
+    }
+  }
+  return canMove;
+}
+
+function lockBlock() {
+  const block = curBlock;
+  const shape = block.shape;
+  for (let y = 0; y < shape.length; y++) {
+    for (let x = 0; x < shape[y].length; x++) {
+      if (shape[y][x] != 0 && y + row >= 0) {
+        boardState[y + row][x + col] = 1;
+      }
+    }
+  }
+}
+
+function moveBlock(direction) {
+  if (direction == 'down' && moveCheck(direction)) {
+    eraseBlock();
+    row++;
+    drawBlock();
+  }
+  if ((direction == 'left' || direction == 'right') && moveCheck(direction)) {
+    eraseBlock();
+    col += direction == 'left' ? -1 : 1;
+    drawBlock();
+  }
+}
+
+function rotateBlock() {
+  const block = curBlock;
+  const shape = block.shape;
+
+  let arr = Array.from({ length: shape.length }, () => Array(shape.length).fill(0));
+  for (let y = 0; y < shape.length; y++) {
+    for (let x = 0; x < shape[y].length; x++) {
+      arr[y][x] = block.shape[-1 * x + shape.length - 1][y];
+    }
+  }
+  eraseBlock();
+  block.rotateState = (block.rotateState + 1) % 4;
+  block.shape = arr;
+  drawBlock();
+}
+
+function holdBlock() {
+  eraseBlock();
+  spawnBlock();
+  row++;
+  drawBlock();
+}
+
+function handleKeyDown(e) {
+  if (e.key == 's') {
+    stop = !stop;
+  }
+  if (e.key == 'r') {
+    location.reload();
+  }
+  if (e.key == 'ArrowLeft') {
+    moveBlock('left');
+  }
+  if (e.key == 'ArrowRight') {
+    moveBlock('right');
+  }
+  if (e.key == 'ArrowDown') {
+    moveBlock('down');
+  }
+  if (e.key == 'ArrowUp') {
+    rotateBlock();
+  }
+  if (e.key == 'Shift') {
+    holdBlock();
+  }
+}
+
+createBoard();
+spawnBlock();
+
+setInterval(() => {
+  if (!stop) moveBlock('down');
+}, 500);
+
+window.addEventListener('keydown', handleKeyDown);
