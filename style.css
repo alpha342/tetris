@@ -11,24 +11,23 @@ body {
   display: flex;
   margin: 0;
   background-color: white;
+  height: 100vh;
   align-items: center;
   justify-content: center;
-  height: 100vh;
 }
 
-.box {
+#container {
   border: 10px solid #333;
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: center;
 }
 
-#game-board {
-  width: 400px;
-  border-right: 0;
-  border-left: 0;
+#next-box {
+  border-left: 10px solid #333;
 }
-
-#hold-side,
-#next-side {
-  height: 880px;
+#hold-box {
+  border-right: 10px solid #333;
 }
 
 #hold-board,
@@ -44,7 +43,6 @@ body {
 }
 
 .row {
-  height: 40px;
   font-size: 0;
 }
 

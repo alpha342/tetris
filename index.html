@@ -7,19 +7,21 @@
     <title>Tetris</title>
   </head>
   <body>
-    <div class="box" id="hold-side">
-      <div class="hold-text">hold</div>
-      <div id="hold-board"></div>
-      <div class="information">
-        <div>level</div>
-        <div>line</div>
-        <div>score</div>
+    <div class="box" id="container">
+      <div class="box" id="hold-box">
+        <div class="hold-text">hold</div>
+        <div id="hold-board"></div>
+        <div class="information">
+          <div>level</div>
+          <div>line</div>
+          <div>score</div>
+        </div>
       </div>
-    </div>
-    <div class="box" id="game-board"></div>
-    <div class="box" id="next-side">
-      <div class="next-text">next</div>
-      <div id="next-board"></div>
+      <div class="box" id="game-board"></div>
+      <div class="box" id="next-box">
+        <div class="next-text">next</div>
+        <div id="next-board"></div>
+      </div>
     </div>
     <script src="./hold.js" type="module"></script>
     <script src="./main.js" type="module"></script>
