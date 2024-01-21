@@ -1,15 +1,46 @@
+@font-face {
+  font-family: 'Pointless';
+  src: url('./Pointless.ttf');
+}
+
+* {
+  font-family: 'Pointless';
+}
+
 body {
-  display: grid;
+  display: flex;
   margin: 0;
   background-color: white;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   height: 100vh;
 }
 
-.game-board {
-  border: 10px ridge #7777;
+.box {
+  border: 10px solid #333;
+}
+
+#game-board {
   width: 400px;
+  border-right: 0;
+  border-left: 0;
+}
+
+#hold-side,
+#next-side {
+  height: 880px;
+}
+
+#hold-board,
+#next-board {
+  border-top: 10px solid #333;
+  border-bottom: 10px solid #333;
+}
+
+.hold-text,
+.next-text {
+  font-size: x-large;
+  padding-left: 5px;
 }
 
 .row {
@@ -22,5 +53,5 @@ body {
   height: 36px;
   width: 36px;
   background-color: white;
-  border: 2px inset #7777;
+  border: 2px solid #7777;
 }

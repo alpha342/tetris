@@ -12,13 +12,12 @@ export function updateBlock(shape, action) {
   }
 }
 
-export function cellAt(x, y) {
-  const board = document.querySelector('.game-board');
+export function cellAt(targetBoard, x, y) {
+  const board = targetBoard;
   const cell = board.querySelectorAll('.row')[y].querySelectorAll('.cell')[x];
   return cell;
 }
 
-export function setCellStyle(cell, color, style) {
+export function setCellStyle(cell, color) {
   cell.style.backgroundColor = color;
-  cell.style.borderStyle = style;
 }
